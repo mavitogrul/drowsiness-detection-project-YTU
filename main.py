@@ -103,7 +103,9 @@ def send_email(receivers, html):
 
     # Add HTML/plain-text parts to MIMEMultipart message
     # The email client will try to render the last part first
+
     filename = "op_webcam.csv"  # In same directory as script
+
     # Open PDF file in binary mode
     with open(filename, "rb") as attachment:
         # Add file as application/octet-stream
