@@ -46,7 +46,7 @@ total_ts = []
 
 
 # If EAR value get below thresh value, it means it's time to count 20 frame to ensure the driver is sleepy
-thresh = 0.20
+thresh = 0.25
 
 # Count 20 frame to alert the driver
 frame_check = 20
