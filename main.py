@@ -378,12 +378,23 @@ df.to_csv("op_webcam.csv", index=True)
 # df = pd.read_csv("op_webcam.csv")
 # df.plot(x='TIME', y='EAR')
 
-plt.xticks(rotation=45, ha='right')
 plt.title('EAR calculation over time of webcam')
 plt.ylabel('EAR')
-plt.plot(c, a)
+plt.ylim(0.05, 0.5)
+plt.xlabel('Frame Count')
+plt.xticks(rotation=45, ha='right')
+plt.grid(True)
+
+plt.minorticks_on()
+
+plt.plot(c, a, "r")
+
+plt.savefig("figure.pdf")
+
 plt.gcf().autofmt_xdate()
+
 plt.show()
+
 cv2.destroyAllWindows()
 
 cap.release()
