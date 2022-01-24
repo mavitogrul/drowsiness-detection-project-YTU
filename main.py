@@ -1,4 +1,6 @@
 import csv
+import time
+
 import imutils
 from imutils import face_utils
 from pygame import mixer
@@ -24,7 +26,7 @@ import pickle
 template = html
 
 mixer.init()
-sound = mixer.Sound('alarm.MP3')
+sound = mixer.Sound('alarm.ogg')
 
 # EAR list which will be saved and drawn later
 total_ear = []
@@ -165,6 +167,7 @@ def send_email_at():
             pickle.dump(data, dosya2)
             dosya2.close()
 
+time.sleep(3)
 
 while cap.isOpened():
 
@@ -351,7 +354,8 @@ while cap.isOpened():
             landmark_drawing_spec=drawing_spec,
             connection_drawing_spec=drawing_spec)
 
-    cv2.putText(image, "Horizontal Head Angle : " + str(round(angle_y, 2)), (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
+    cv2.putText(image, "Horizontal Head Angle : " + str(round(angle_y, 2)), (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                (0, 255, 255), 2)
 
     cv2.imshow("Head Pose Estimation", image)
 
