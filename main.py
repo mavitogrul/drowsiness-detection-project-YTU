@@ -389,7 +389,7 @@ plt.minorticks_on()
 
 plt.plot(c, a, "r")
 
-plt.savefig("figure.pdf")
+plt.savefig("figure.png")
 
 plt.gcf().autofmt_xdate()
 
