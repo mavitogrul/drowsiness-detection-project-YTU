@@ -1,6 +1,5 @@
 import csv
-import time
-
+import imutils
 from imutils import face_utils
 from pygame import mixer
 import dlib
@@ -11,7 +10,6 @@ import mediapipe as mp
 import numpy as np
 import helpers
 from helpers import client
-import pickle
 import smtplib
 import ssl
 from email import encoders
@@ -70,6 +68,8 @@ flag = 0
 helpers.assure_path_exists("dataset/")
 control = 0
 
+angle_y = 0
+
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
@@ -85,8 +85,8 @@ with open('email_list.csv', 'w', newline='') as e:
                   ["Mavi Toğrul", "mavitogrul@gmail.com"]]
     writer.writerows(email_list)
 
-def send_email(receivers, html):
 
+def send_email(receivers, html):
     sender_email = "ytu.tez.deneme@gmail.com"
     password = "ytu.tez.deneme.2022"
     receiver_email = receivers
@@ -129,6 +129,7 @@ def send_email(receivers, html):
         server.login(sender_email, password)
         server.sendmail(sender_email, receiver_email, text)
 
+
 def send_email_at():
     if os.path.isfile('important'):
         print("kullanıcılar mevcut")
@@ -164,16 +165,14 @@ def send_email_at():
             pickle.dump(data, dosya2)
             dosya2.close()
 
+
 while cap.isOpened():
 
     send_email_at()
 
-    # Extract a frame
-    # ret, frame = cap.read()
-    # Resize the frame
-    # frame = imutils.resize(frame, width=600)
-
     success, image = cap.read()
+
+    image = imutils.resize(image, width=620)
 
     # Flip the image horizontally for a later selfie-view display
     # Also convert the color space from BGR to RGB
@@ -259,10 +258,12 @@ while cap.isOpened():
             cv2.line(image, p1, p2, (255, 0, 0), 3)
 
             # Add the text on the image
-            cv2.putText(image, text, (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
-            cv2.putText(image, "x: " + str(np.round(x, 2)), (500, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-            cv2.putText(image, "y: " + str(np.round(y, 2)), (500, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-            cv2.putText(image, "z: " + str(np.round(z, 2)), (500, 150), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.putText(image, text, (480, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            cv2.putText(image, "x: " + str(np.round(x, 2)), (510, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            cv2.putText(image, "y: " + str(np.round(y, 2)), (510, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            cv2.putText(image, "z: " + str(np.round(z, 2)), (510, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+            angle_y = y
 
             # Convert the frame to grayscale
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -270,7 +271,7 @@ while cap.isOpened():
             # Detect faces
             subjects = detect(gray, 0)
 
-            cv2.putText(image, "PRESS 'Q' TO EXIT", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 3)
+            cv2.putText(image, "PRESS 'Q' TO EXIT", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
             # Now loop over all the face detections and apply the predictor
             for subject in subjects:
@@ -310,8 +311,8 @@ while cap.isOpened():
                 cv2.drawContours(image, [leftEyeHull], -1, (0, 255, 0), 1)
                 cv2.drawContours(image, [rightEyeHull], -1, (0, 255, 0), 1)
 
-                cv2.putText(image, "EAR: " + str(round(ear, 2)), (50, 100),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                cv2.putText(image, "EAR: " + str(round(ear, 2)), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                            (0, 255, 0) if ear >= thresh else (0, 0, 255), 2)
 
                 if ear < thresh:
                     control = 0
@@ -329,14 +330,12 @@ while cap.isOpened():
                         if control == 0:
                             # Add the frame to the dataset ar a proof of drowsy driving
                             cv2.imwrite("dataset/frame_sleep%d.jpg" % control, image)
-                            print("IF AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
                             message = client.messages.create(
                                 body='Sürücünün uykulu olduğu tespit edildi ! Dikkatli olun !',
                                 from_='+16075369130',
                                 to='+905314983563')
 
                         control = 1
-
                         try:
                             sound.play()
                         except:
@@ -351,6 +350,8 @@ while cap.isOpened():
             connections=mp_face_mesh.FACEMESH_CONTOURS,
             landmark_drawing_spec=drawing_spec,
             connection_drawing_spec=drawing_spec)
+
+    cv2.putText(image, "Horizontal Head Angle : " + str(round(angle_y, 2)), (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
 
     cv2.imshow("Head Pose Estimation", image)
 
