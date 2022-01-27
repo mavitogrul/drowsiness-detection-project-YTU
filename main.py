@@ -46,7 +46,7 @@ total_ts = []
 
 
 # If EAR value get below thresh value, it means it's time to count 20 frame to ensure the driver is sleepy
-thresh = 0.25
+thresh = 0.30
 
 # Count 20 frame to alert the driver
 frame_check = 20
@@ -188,6 +188,8 @@ while cap.isOpened():
     image.flags.writeable = True
     # Convert the color space from RGB to BGR
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
+    cv2.putText(image, "Threshold : " + str(thresh), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
     img_h, img_w, img_c = image.shape
     face_3d = []
