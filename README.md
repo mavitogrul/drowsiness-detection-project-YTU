@@ -1,12 +1,5 @@
 # Driver Drowsiness Detection System, Python-Dlib-OpenCV
 
-This is our thesis project for graduation Yildiz Technical University Electronical-Communication Engineering
-
-Students:
-- Tolga Öcal tolgaocal80@gmail.com
-- Ahmet Faruk Sırma ahmetfaruk2557@gmail.com
-- Mavi Toğrul mavitogrul@gmail.com
-
 The number of automobiles in traffic is increasing day by day as a result of improving 
 technologies in our country and around the world. As a result of this growth, there are 
 more traffic accidents. When the causes of accidents are investigated, it is discovered 
@@ -26,6 +19,14 @@ Used packages and libraries:
 - iBUG 300-W Database
 - imutils
 - Python 3.8
+
+Features
+
+- Sends all driver eye movement data to the given email list automatically every scheduled time interval (default 1 week) regardless rebooting the app
+- Shows horizontal head position angle
+- Sends real-time SMS and email to the given phone number if drowsiness detected
+- Plots EAR data & saves as PNG file
+- Saves the frame that drowsiness detected
 
 How to run this project?
 - Install Python 3.8 (recommend version due to some library issues with later versions)
